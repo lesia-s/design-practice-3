@@ -1,0 +1,31 @@
+go_binary {
+  name: "server",
+  pkg: "github.com/VictoryKS/design-practice-3/cmd/server",
+
+  // Build inputs.
+  srcs: [
+    "httptools/**/*.go",
+    "signal/**/*.go",
+    "cmd/server/*.go"
+  ]
+}
+
+
+go_binary {
+  name: "lb",
+  
+  pkg: "github.com/roman-mazur/design-practice-3-template/cmd/lb",
+  testPkg: "github.com/VictoryKS/design-practice-3/cmd/server",
+
+  srcs: [
+    "httptools/**/*.go",
+    "signal/**/*.go",
+    "cmd/lb/*.go"
+  ],
+
+  // Test inputs.
+  testSrcs: ["**/*test.go"],
+
+  vendorFirst: false,
+  srcsExclude: ["vendor/**/*"]
+}
