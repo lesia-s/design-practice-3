@@ -13,9 +13,9 @@ go_binary {
 
 go_binary {
   name: "lb",
-  
-  pkg: "github.com/roman-mazur/design-practice-3-template/cmd/lb",
-  testPkg: "github.com/VictoryKS/design-practice-3/cmd/server",
+
+  pkg: "github.com/VictoryKS/design-practice-3/cmd/lb",
+  testPkg: "github.com/VictoryKS/design-practice-3/cmd/lb",
 
   srcs: [
     "httptools/**/*.go",
