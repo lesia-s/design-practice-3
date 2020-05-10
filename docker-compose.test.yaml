@@ -16,5 +16,20 @@ services:
   balancer:
     # Для тестів включаємо режим відлагодження, коли балансувальник додає інформацію, кому було відправлено запит.
     command: ["lb", "--trace=true"]
-    environment:
-     - CONF_RESPONSE_DELAY_SEC=20
+    # environment:
+    #  - CONF_RESPONSE_DELAY_SEC=20
+
+  # server1:
+  #   # command: ["server1"]
+  #   environment:
+  #    - CONF_RESPONSE_DELAY_SEC=2
+  #
+  # server2:
+  #   # command: ["server2"]
+  #   environment:
+  #    - CONF_RESPONSE_DELAY_SEC=2
+
+  # server3:
+    # command: ["server3"]
+    # environment:
+    #  - CONF_RESPONSE_DELAY_SEC=2

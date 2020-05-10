@@ -29,3 +29,17 @@ go_binary {
   vendorFirst: false,
   srcsExclude: ["vendor/**/*"]
 }
+
+/*
+go_binary {
+  name: "integration",
+  testPkg: "github.com/VictoryKS/design-practice-3/integration",
+  testSrcs: ["github.com/VictoryKS/design-practice-3/integration/*test.go"]
+}
+*/
+
+go_binary {
+  name: "integration",
+  testPkg: "github.com/VictoryKS/design-practice-3/integration",
+  outTestFile: "test.txt",
+}
