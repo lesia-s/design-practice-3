@@ -30,16 +30,24 @@ go_binary {
   srcsExclude: ["vendor/**/*"]
 }
 
-/*
 go_binary {
-  name: "integration",
-  testPkg: "github.com/VictoryKS/design-practice-3/integration",
-  testSrcs: ["github.com/VictoryKS/design-practice-3/integration/*test.go"]
-}
-*/
+  name: "integration-test",
 
-go_binary {
-  name: "integration",
   testPkg: "github.com/VictoryKS/design-practice-3/integration",
-  outTestFile: "test.txt",
+  testsResFile: "integration-test.txt",
+  testsBinResFile: "integration-tests",
+
+  srcs: [
+    "httptools/**/*.go",
+    "signal/**/*.go",
+    "cmd/lb/*.go",
+    "cmd/server/*.go"
+  ],
+
+  // Test inputs.
+  testSrcs: ["**/*test.go"],
+  noTestExec: true,
+
+  vendorFirst: false,
+  srcsExclude: ["vendor/**/*"]
 }

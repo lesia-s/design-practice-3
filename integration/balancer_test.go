@@ -9,7 +9,7 @@ import (
 	// "gopkg.in/check.v1"
 )
 
-const baseAddress = "http://balancer:8090"
+const baseAddress = "http://localhost:8090"
 
 var client = http.Client{
 	Timeout: 3 * time.Second,
