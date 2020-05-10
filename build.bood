@@ -31,11 +31,10 @@ go_binary {
 }
 
 go_binary {
-  name: "integration-test",
+  name: "integration-tests",
 
   testPkg: "github.com/VictoryKS/design-practice-3/integration",
   testsResFile: "integration-test.txt",
-  testsBinResFile: "integration-tests",
 
   srcs: [
     "httptools/**/*.go",
@@ -46,7 +45,7 @@ go_binary {
 
   // Test inputs.
   testSrcs: ["**/*test.go"],
-  noTestExec: true,
+  testBenchmark: true,
 
   vendorFirst: false,
   srcsExclude: ["vendor/**/*"]
