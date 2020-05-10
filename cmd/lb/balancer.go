@@ -48,6 +48,19 @@ var (
 	}
 )
 
+func findMin(serversPool []*server) int {
+	serverIndex := -1
+	connMin := int(^uint(0) >> 1) // max int
+	for i := 0; i < 3; i++ {
+		server := serversPool[i]
+		if (*server).isHealthy && (*server).connCnt < connMin {
+			serverIndex = i
+			connMin = (*server).connCnt
+		}
+	}
+	return serverIndex
+}
+
 func scheme() string {
 	if *https {
 		return "https"
@@ -120,15 +133,7 @@ func main() {
 	}
 
 	frontend := httptools.CreateServer(*port, http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		serverIndex := -1
-		connMin := int(^uint(0) >> 1) // max int
-		for i := 0; i < 3; i++ {
-			server := serversPool[i]
-			if (*server).isHealthy && (*server).connCnt < connMin {
-				serverIndex = i
-				connMin = (*server).connCnt
-			}
-		}
+		serverIndex := findMin(serversPool)
 
 		if serverIndex >= 0 {
 			server := serversPool[serverIndex]
