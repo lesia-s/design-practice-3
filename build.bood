@@ -45,7 +45,7 @@ go_binary {
 
   // Test inputs.
   testSrcs: ["**/*test.go"],
-  testBenchmark: true,
+//  testBenchmark: true,
 
   vendorFirst: false,
   srcsExclude: ["vendor/**/*"]

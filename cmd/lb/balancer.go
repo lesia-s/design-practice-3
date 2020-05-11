@@ -24,7 +24,7 @@ var (
 	timeoutSec = flag.Int("timeout-sec", 3, "request timeout time in seconds")
 	https = flag.Bool("https", false, "whether backends support HTTPs")
 
-	traceEnabled = flag.Bool("trace", false, "whether to include tracing information into responses")
+	traceEnabled = flag.Bool("trace", true, "whether to include tracing information into responses")
 )
 
 var (

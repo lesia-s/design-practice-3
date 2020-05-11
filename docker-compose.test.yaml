@@ -19,17 +19,17 @@ services:
     # environment:
     #  - CONF_RESPONSE_DELAY_SEC=20
 
-  # server1:
-  #   # command: ["server1"]
-  #   environment:
-  #    - CONF_RESPONSE_DELAY_SEC=2
-  #
-  # server2:
-  #   # command: ["server2"]
-  #   environment:
-  #    - CONF_RESPONSE_DELAY_SEC=2
+  server1:
+    command: ["server1"]
+    environment:
+     - CONF_RESPONSE_DELAY_SEC=2
 
-  # server3:
-    # command: ["server3"]
-    # environment:
-    #  - CONF_RESPONSE_DELAY_SEC=2
+  server2:
+    command: ["server2"]
+    environment:
+     - CONF_RESPONSE_DELAY_SEC=2
+
+  server3:
+    command: ["server3"]
+    environment:
+     - CONF_RESPONSE_DELAY_SEC=2
