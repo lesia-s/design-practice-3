@@ -5,13 +5,12 @@ import (
 	"net/http"
 	"testing"
 	"time"
-		"log"
-		"sync"
-		    "math/rand"
+	// "log"
+	"sync"
+	"math/rand"
+	"strconv"
 
 	. "gopkg.in/check.v1"
-
-	// "../cmd/lb/bala"
 )
 
 const baseAddress = "http://localhost:8090"
@@ -19,6 +18,7 @@ const baseAddress = "http://localhost:8090"
 type server struct {
 	name string
 	connCnt int
+	mutex sync.Mutex
 }
 
 var (
@@ -38,20 +38,6 @@ var (
 	}
 )
 
-func findMin(serversPool []*server) string {
-	serverName := ""
-	connMin := int(^uint(0) >> 1) // max int
-	for i := 0; i < 3; i++ {
-		server := serversPool[i]
-
-		if (*server).connCnt < connMin {
-			serverName = (*server).name
-			connMin = (*server).connCnt
-		}
-	}
-	return serverName
-}
-
 var client = http.Client{
 	Timeout: 3 * time.Second,
 }
@@ -64,14 +50,14 @@ var _ = Suite(&MySuite{})
 
 func (s *MySuite) TestBalancer(c *C) {
 	var wg sync.WaitGroup
-	for i := 0; i < 10; i++ {
+
+	n := 40
+	for i := 0; i < n; i++ {
 		wg.Add(1)
-
 		go func(wg *sync.WaitGroup){
+			defer wg.Done()
 
-			// time.Tick(time.Duration(rand.Intn(5)) * time.Second)
-
-			min := findMin(serversPool)
+			time.Sleep(time.Duration(rand.Intn(10)) * time.Second)
 
 			resp, err := client.Get(fmt.Sprintf("%s/api/v1/some-data", baseAddress))
 			if err != nil {
@@ -79,35 +65,67 @@ func (s *MySuite) TestBalancer(c *C) {
 			}
 
 			server := resp.Header.Get("lb-from")
-			log.Printf("response from [%s]", server)
+			// log.Printf("response from [%s]", server)
 
-			go func(sname string) {
-				for i := 0; i < 3; i++ {
-					if (*serversPool[i]).name == sname {
-						(*serversPool[i]).connCnt++
-						time.Tick(2 * time.Second)
-						(*serversPool[i]).connCnt--
-					}
+			sum := 0
+			for i := 0; i < len(serversPool); i++ {
+				svr := serversPool[i]
+				if (*svr).name == server {
+					(*svr).mutex.Lock()
+					(*svr).connCnt++
+					(*svr).mutex.Unlock()
 				}
-			}(server)
+				sum += (*svr).connCnt
+			}
 
-			defer wg.Done()
+			sum = sum/len(serversPool) + 1
+			for i := 0; i < len(serversPool); i++ {
+				test := false
+				if (*serversPool[i]).connCnt-1 <= sum {
+					test = true
+				}
+				c.Assert(test, Equals, true)
+			}
 
-			c.Assert(server, Equals, min)
 		}(&wg)
 	}
 	wg.Wait()
 
-	time.Tick(5 * time.Second)
 }
 
-
 func BenchmarkBalancer(b *testing.B) {
-	// TODO: Реалізуйте інтеграційний бенчмарк для балансувальникка.
+	var wg sync.WaitGroup
 
 	for i := 0; i < b.N; i++ {
-		b.Skip("...skipping BenchmarkBalancer test...")
-		fmt.Sprintf("------> BenchmarkBalancer <--------")
-  }
+		wg.Add(1)
+		go func(group sync.WaitGroup) {
+			defer wg.Done()
 
+			_, err := client.Get(fmt.Sprintf("%s/api/v1/some-data", baseAddress))
+
+			if err != nil {
+				b.Logf("Response error%s", err)
+			}
+		}(wg)
+	}
+	wg.Wait()
+}
+
+func BenchmarkServers(b *testing.B) {
+	var wg sync.WaitGroup
+
+	for i := 0; i < b.N; i++ {
+		wg.Add(1)
+		go func(group sync.WaitGroup) {
+			defer wg.Done()
+
+			svrAddress := "http://localhost:808" + strconv.Itoa(i % 3)
+			_, err := client.Get(fmt.Sprintf("%s/api/v1/some-data", svrAddress))
+
+			if err != nil {
+				b.Error(err)
+			}
+		}(wg)
+	}
+	wg.Wait()
 }
