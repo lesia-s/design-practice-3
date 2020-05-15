@@ -1,0 +1,26 @@
+os: linux
+
+language: go
+
+go: "1.14"
+
+notifications:
+  email: false
+
+services:
+  - docker
+
+jobs:
+  include:
+    - name: Docker-compose
+      stage: docker-compose
+      script: docker-compose up
+    - name: Test
+      stage: test
+      script:
+        - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
+        - go test -bench=.
+
+stages:
+  - docker-compose
+  - test
