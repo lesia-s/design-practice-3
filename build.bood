@@ -29,3 +29,24 @@ go_binary {
   vendorFirst: false,
   srcsExclude: ["vendor/**/*"]
 }
+
+go_binary {
+  name: "integration-tests",
+
+  testPkg: "github.com/VictoryKS/design-practice-3/integration",
+  testsResFile: "integration-test.txt",
+
+  srcs: [
+    "httptools/**/*.go",
+    "signal/**/*.go",
+    "cmd/lb/*.go",
+    "cmd/server/*.go"
+  ],
+
+  // Test inputs.
+  testSrcs: ["**/*test.go"],
+  testBenchmark: true,
+
+  vendorFirst: false,
+  srcsExclude: ["vendor/**/*"]
+}

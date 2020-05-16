@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"sync"
 
 	"github.com/VictoryKS/design-practice-3/httptools"
 	"github.com/VictoryKS/design-practice-3/signal"
@@ -17,6 +18,7 @@ type server struct {
 	name string
 	isHealthy bool
 	connCnt int
+	mutex sync.Mutex
 }
 
 var (
@@ -24,7 +26,7 @@ var (
 	timeoutSec = flag.Int("timeout-sec", 3, "request timeout time in seconds")
 	https = flag.Bool("https", false, "whether backends support HTTPs")
 
-	traceEnabled = flag.Bool("trace", false, "whether to include tracing information into responses")
+	traceEnabled = flag.Bool("trace", true, "whether to include tracing information into responses")
 )
 
 var (
@@ -83,7 +85,10 @@ func health(dst string) bool {
 }
 
 func forward(server *server, rw http.ResponseWriter, r *http.Request) error {
+	(*server).mutex.Lock()
 	(*server).connCnt++
+	(*server).mutex.Unlock()
+
 	dst := (*server).name
 	ctx, _ := context.WithTimeout(r.Context(), timeout)
 	fwdRequest := r.Clone(ctx)
@@ -109,12 +114,20 @@ func forward(server *server, rw http.ResponseWriter, r *http.Request) error {
 		if err != nil {
 			log.Printf("Failed to write response: %s", err)
 		}
+
+		(*server).mutex.Lock()
 		(*server).connCnt--
+		(*server).mutex.Unlock()
+
 		return nil
 	} else {
 		log.Printf("Failed to get response from %s: %s", dst, err)
 		rw.WriteHeader(http.StatusServiceUnavailable)
+
+		(*server).mutex.Lock()
 		(*server).connCnt--
+		(*server).mutex.Unlock()
+
 		return err
 	}
 }
