@@ -14,7 +14,7 @@ jobs:
   include:
     - stage: test
       script: docker-compose up --build
-
-script:
-  - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
-  - go test -bench=.
+    - stage: test
+      script:
+        - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
+        - go test -bench=.
