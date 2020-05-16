@@ -10,7 +10,13 @@ notifications:
 services:
   - docker
 
+stages:
+  - build
+  - test
+
 jobs:
   include:
+    - stage: build
+      script: docker-compose up -d
     - stage: test
-      script: docker-compose up --build && docker-compose exec app bash -c "go test ./integration -bench=."
+      script: docker-compose up -d && docker-compose exec app bash -c "go test ./integration -bench=."
