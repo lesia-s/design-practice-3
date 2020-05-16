@@ -13,8 +13,4 @@ services:
 jobs:
   include:
     - stage: test
-      script: docker-compose up --build
-    - stage: test
-      script:
-        - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
-        - go test -bench=.
+      script: docker-compose up --build && docker-compose exec app bash -c "go test ./integration -bench=."
