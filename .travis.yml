@@ -12,12 +12,9 @@ services:
 
 jobs:
   include:
-    - name: Test
-      stage: test
-      script: docker-compose up
-    - script:
-        - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
-        - go test -bench=.
+    - stage: test
+      script: docker-compose up --build
 
-stages:
-  - test
+script:
+  - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
+  - go test -bench=.
