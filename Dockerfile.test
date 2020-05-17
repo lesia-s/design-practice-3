@@ -7,4 +7,4 @@ RUN go get -u github.com/tnsts/design-practice-2/build/cmd/bood
 WORKDIR /go/src/practice-3
 COPY . .
 
-ENTRYPOINT ["bood", "out/test-results/integration-test.txt"]
+ENTRYPOINT [./test.sh]
