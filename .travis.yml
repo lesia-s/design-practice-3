@@ -10,7 +10,8 @@ notifications:
 services:
   - docker
 
+env:
+  GO111MODULE=on
+
 script:
-  - docker-compose up -d
-  - cd $GOPATH/src/github.com/lesia-s/design-practice-3/integration
-  - go test -bench=.
+  - sudo docker-compose -f docker-compose.yaml -f docker-compose.test.yaml up --exit-code-from test
