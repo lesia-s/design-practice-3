@@ -10,22 +10,7 @@ notifications:
 services:
   - docker
 
-install:
-  - docker-compose up -d
-  - sleep 10
-
 script:
+  - docker-compose up -d
   - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
   - go test -bench=.
-#jobs:
-#  include:
-#    - name: Test
-#      stage: test
-#      script: docker-compose up
-#    - script:
-#        - sleep 15
-#        - cd $GOPATH/src/github.com/VictoryKS/design-practice-3/integration
-#        - go test -bench=.
-#
-#stages:
-#  - test
